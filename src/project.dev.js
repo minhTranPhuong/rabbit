@@ -37,7 +37,8 @@ window.__require = function e(t, n, r) {
         _oldScale: 0,
         _flip: false,
         _oldPosition: 0,
-        _move: false
+        _move: false,
+        _limitScale: 3
       },
       onLoad: function onLoad() {
         this.node.active = false;
@@ -49,7 +50,7 @@ window.__require = function e(t, n, r) {
       },
       update: function update(dt) {
         cc.log("update black Rabbit !!!");
-        if (this._timeScale < 3) {
+        if (this._timeScale < this._limitScale) {
           this._timeScale += .01;
           this.node.scale = this._oldScale * this._timeScale;
         } else if (!this._move && this.node.x < 100) this.move(); else if (false == this._flip) {
@@ -79,7 +80,8 @@ window.__require = function e(t, n, r) {
         greyRabbit: {
           default: null,
           type: cc.Component
-        }
+        },
+        _moveLimit: 100
       },
       onLoad: function onLoad() {
         this.node.active = false;
@@ -90,7 +92,7 @@ window.__require = function e(t, n, r) {
       },
       update: function update(dt) {
         cc.log("update brow Rabbit!!!");
-        if (this.node.x < 100) {
+        if (this.node.x < this._moveLimit) {
           this.node.angle -= 9;
           this.node.x += 3;
         } else {
@@ -109,10 +111,11 @@ window.__require = function e(t, n, r) {
     cc.Class({
       extends: cc.Component,
       properties: {
-        _time: 0,
+        _jumpCount: 0,
         _Ystart: 0,
         _Yend: 0,
         _state: "up",
+        _jumpLimit: 3,
         blackGrabbit: {
           default: null,
           type: cc.Component
@@ -128,7 +131,7 @@ window.__require = function e(t, n, r) {
       },
       update: function update(dt) {
         cc.log("update grey Rabbit !!!");
-        if (3 == this._time) {
+        if (this._jumpCount == this._jumpLimit) {
           this.enabled = false;
           this.blackGrabbit.node.active = true;
           return;
@@ -139,7 +142,7 @@ window.__require = function e(t, n, r) {
         } else {
           if (this.node.y == this._Ystart) {
             this._state = "up";
-            this._time++;
+            this._jumpCount++;
           }
           this.node.y -= 1;
         }
@@ -157,7 +160,8 @@ window.__require = function e(t, n, r) {
         brownRabbit: {
           default: null,
           type: cc.Component
-        }
+        },
+        _moveLimit: 100
       },
       start: function start() {
         cc.log("Hello");
@@ -167,7 +171,7 @@ window.__require = function e(t, n, r) {
         this.move();
       },
       move: function move() {
-        if (this.node.x >= 100) {
+        if (this.node.x >= this._moveLimit) {
           this.enabled = false;
           this.brownRabbit.node.active = true;
         } else this.node.x = this.node.x + 3;
